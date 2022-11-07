@@ -7,6 +7,7 @@ class View {
     this.button = document.querySelector('.btn');
     this.body = document.querySelector('body');
     this.failSound = new Audio('./sounds/invalid_move.wav');
+    this.movesContainer = document.querySelector('.moves');
   }
   // Create board
   createBoard() {
@@ -120,7 +121,7 @@ class View {
     return shortestPath;
   }
 
-  drawPath(arr) {
+  drawPathAndMoveBall(arr) {
     const DELAY_MS = 25;
     let delayBetweenLoops = arr.length * DELAY_MS;
     const ball = document.createElement('div');
@@ -163,29 +164,16 @@ class View {
     //    }
     //  }, 150);
   }
-  //   }
-
-  moveBall(arr) {
-    const reversed = arr.reverse();
-
-    const ballName = document
-      .querySelector('.active')
-      .getAttribute('class')
-      .split(' ')[1];
-    const ball = document.createElement('div');
-    ball.classList.add('color-ball', ballName);
-    ball.style.backgroundImage = `url(../images/${ballName}.png)`;
-    console.log(ballName);
-    for (let i = 0; i < reversed.length; i++) {
-      setTimeout(() => {
-        document.getElementById(reversed[i]).innerHTML === '';
-        document.getElementById(reversed[i]).classList.remove('path');
-      }, i * 20);
-    }
-    //  const ballName = `${color}`;
-
-    document.getElementById(randomEmptyField).appendChild(ball);
+  displayNextBalls(colorsContainer) {
+    colorsContainer.forEach(color => {
+      const ball = document.createElement('div');
+      ball.classList.add('color-ball', color);
+      ball.style.backgroundImage = `url(../images/${color}.png)`;
+      this.movesContainer.appendChild(ball);
+    });
+    colorsContainer.nextMove = [];
   }
+
   //   test() {
   //     const el = document.getElementById(5);
   //     el.classList.add('path');

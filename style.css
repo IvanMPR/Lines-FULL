@@ -76,6 +76,14 @@ h1 {
   color: white;
 }
 
+.moves {
+  margin: auto;
+  width: 30rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .btn {
   display: block;
   margin: 2rem auto;

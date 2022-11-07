@@ -41,12 +41,12 @@ class Controller {
     return this.v.isPathPossible(event, list, stateObject);
   }
 
-  ctrlDrawPath(shortestPathArray) {
-    return this.v.drawPath(shortestPathArray);
+  ctrlDrawPathAndMoveBall(shortestPathArray) {
+    return this.v.drawPathAndMoveBall(shortestPathArray);
   }
 
-  ctrlMoveBall(shortestPathArray) {
-    return this.v.moveBall(shortestPathArray);
+  ctrlDisplayNextBalls(colorsContainer) {
+    return this.v.displayNextBalls(colorsContainer);
   }
 
   listeners() {
@@ -80,8 +80,8 @@ class Controller {
         return;
       // this.helperObject.nextRound = true;
       const path = this.ctrlPath(e, this.ctrlMakeList(), this.helperObject);
-      this.ctrlDrawPath(path);
-      // this.ctrlMoveBall(path);
+      this.ctrlDrawPathAndMoveBall(path);
+      this.ctrlDisplayNextBalls(this.helperObject.nextMove);
       // remove active class
       this.ctrlRemoveActiveClass();
     });
