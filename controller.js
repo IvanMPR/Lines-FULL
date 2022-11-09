@@ -48,26 +48,34 @@ class Controller {
   ctrlDisplayNext(colorsArray) {
     return this.v.displayNextBalls(colorsArray);
   }
+  ctrlDisplayCurrentPickNextBalls(helperObject, constant) {
+    setTimeout(() => {
+      // display current set of balls(after delay, don't want to display new balls while previous ball is on the move)
+      this.ctrlDisplayBalls(helperObject.nextMove);
+      setTimeout(() => {
+        // clear ball colors container
+        helperObject.nextMove = [];
+        // get new set of random colors for the next move, and add them to the container
+        this.ctrlGetRandomColors(constant);
+        // display next ball moves(from the above container)
+        this.ctrlDisplayNext(helperObject.nextMove);
+      }, 0);
+    }, helperObject.delay);
+  }
 
   listeners() {
     // initialize board
     this.ctrlCreateBoard();
     //  initialize first random colors
     this.ctrlGetRandomColors(NUMBER_OF_BALLS);
-    // this.ctrlDisplayNext(this.helperObject.nextMove);
     //  start game, hide button
     this.startButton.addEventListener('click', () => {
-      // display balls having randomly picked colors stored in the helper object
-      this.ctrlDisplayBalls(this.helperObject.nextMove);
-      this.helperObject.nextMove = [];
-      this.ctrlGetRandomColors(NUMBER_OF_BALLS);
-      this.ctrlDisplayNext(this.helperObject.nextMove);
-      // ---------------------------------- //
-
+      this.ctrlDisplayCurrentPickNextBalls(this.helperObject, NUMBER_OF_BALLS);
       // hide button
       this.startButton.style.display = 'none';
       document.querySelector('.scores-div').classList.remove('hidden');
     });
+
     // --- Click on the ball to select it for movement --- Event delegation --- //
     this.gameBoard.addEventListener('click', e => {
       // return if click did not happen on the color ball --- guard clause
@@ -88,16 +96,12 @@ class Controller {
       // this.helperObject.nextRound = true;
       const path = this.ctrlPath(e, this.ctrlMakeList(), this.helperObject);
       this.ctrlDrawPathAndMoveBall(path, this.helperObject);
-
+      // test
+      this.ctrlDisplayCurrentPickNextBalls(this.helperObject, NUMBER_OF_BALLS);
+      // console.log(e.target);
       setTimeout(() => {
-        this.ctrlDisplayBalls(this.helperObject.nextMove);
-        setTimeout(() => {
-          this.helperObject.nextMove = [];
-          this.ctrlGetRandomColors(NUMBER_OF_BALLS);
-          this.ctrlDisplayNext(this.helperObject.nextMove);
-        }, 0);
+        this.v.checkScore(e.target.id, this.helperObject);
       }, this.helperObject.delay);
-
       // remove active class
       this.ctrlRemoveActiveClass();
     });

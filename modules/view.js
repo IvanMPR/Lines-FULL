@@ -166,11 +166,214 @@ class View {
     });
     console.log(colorsArray);
   }
+  // ---------------------------------------------------------------------------- //
+  buildRowColAndDiagonals(id) {
+    // Pad first row with zero, in order to be able to split cell id, for determining row and col
+    const tuple = String(id)
+      .padStart(2, '0')
+      .split('')
+      .map(el => Number(el));
 
-  //   test() {
-  //     const el = document.getElementById(5);
-  //     el.classList.add('path');
-  //   }
+    // Identify row by data from tuple[0]
+    const row = Array.from(
+      { length: BOARD_LENGTH },
+      (_, i) => tuple[0] * BOARD_LENGTH + i
+    );
+
+    // Identify column by data from tuple[1]
+    const column = Array.from(
+      { length: BOARD_LENGTH },
+      (_, i) => tuple[1] + i * BOARD_LENGTH
+    );
+
+    // Build first diagonal from top left to bottom right direction
+    const diagonalFromLeftToRight = pair => {
+      let start;
+      let step = BOARD_LENGTH + 1;
+      if (pair[0] - pair[1] > 0) {
+        start = (pair[0] - pair[1]) * BOARD_LENGTH;
+      } else if (pair[0] - pair[1] < 0) {
+        start = pair[1] - pair[0];
+      } else {
+        start = 0;
+      }
+
+      return Array.from(
+        {
+          length:
+            start < BOARD_LENGTH
+              ? BOARD_LENGTH - start
+              : (BOARD_LENGTH * BOARD_LENGTH - start) / BOARD_LENGTH,
+        },
+        (_, i) => start + i * step
+      );
+    };
+    const topLeftBottomRight = diagonalFromLeftToRight(tuple);
+
+    // Build second diagonal from top right to bottom left direction
+    const diagonalFromRightToLeft = pair => {
+      let start;
+      let step = BOARD_LENGTH - 1;
+
+      if (pair[0] + pair[1] <= step) {
+        start = pair[0] + pair[1];
+      } else {
+        const calcStart = String(pair[0] + pair[1])
+          .split('')
+          .map(el => Number(el))
+          .reduce((acc, curr) => acc + curr, 0);
+        start = Number(calcStart + String(step));
+      }
+
+      return Array.from(
+        {
+          length:
+            start < BOARD_LENGTH
+              ? start + 1
+              : Number(String(start).slice(-1)) -
+                Number(String(start).slice(0, 1)) +
+                1,
+        },
+        (_, i) => start + i * step
+      );
+    };
+    const topRightBottomLeft = diagonalFromRightToLeft(tuple);
+
+    const result = {
+      row: row,
+      column: column,
+      topLeftBottomRight: topLeftBottomRight,
+      topRightBottomLeft: topRightBottomLeft,
+    };
+    console.log(result);
+
+    return result;
+  }
+  // Helper fn to extract color name of the color ball used in the cell with some 'id'
+  extractColor = id =>
+    document.getElementById(`${id}`).innerHTML === ''
+      ? id
+      : document.getElementById(`${id}`).firstChild.className.split(' ')[1];
+  // ----------------------------------------------------------------- //
+  // TopLeftBottomRight - tlbr, TopRightBottomLeft - trbl
+  mapRowColAndDiagonals(row, col, tlbr, trbl) {
+    // Map row fields, if empty, leave id, else put color name
+    const rowMapped = row.map(num => this.extractColor(num));
+    // Same as above, just for column
+    const columnMapped = col.map(num => this.extractColor(num));
+    // LR diagonal mapped
+    const leftToRightDiagMapped = tlbr.map(num => this.extractColor(num));
+    // RL diagonal mapped
+    const rightToLeftDiagMapped = trbl.map(num => this.extractColor(num));
+    const result = {
+      rowMapped: rowMapped,
+      columnMapped: columnMapped,
+      leftToRightDiagMapped: leftToRightDiagMapped,
+      rightToLeftDiagMapped: rightToLeftDiagMapped,
+    };
+    return result;
+  }
+  checkScore(id, helperObject) {
+    //  Retrieve color name as a string, for later check in the row and col and diagonals
+    const colorToMatch = this.extractColor(id);
+    const unmappedFields = this.buildRowColAndDiagonals(id);
+    const mappedFields = this.mapRowColAndDiagonals(
+      unmappedFields.row,
+      unmappedFields.column,
+      unmappedFields.topLeftBottomRight,
+      unmappedFields.topRightBottomLeft
+    );
+
+    console.log(mappedFields);
+
+    // Logic for determining if score happened or not
+    const colorOccurrences = (arr, colorName = colorToMatch) => {
+      return arr.filter(el => el === colorName).length;
+    };
+    // If number of balls of current color >= GOAL_LENGTH in the current row, check if they are consecutive
+    if (colorOccurrences(mappedFields.rowMapped) >= GOAL_LENGTH) {
+      this.deleteIfBallsConsecutive(
+        mappedFields.rowMapped,
+        colorToMatch,
+        unmappedFields.row,
+        helperObject
+      );
+    }
+    // If number of balls of current color >= GOAL_LENGTH in the current column, check if they are consecutive
+    if (colorOccurrences(mappedFields.columnMapped) >= GOAL_LENGTH) {
+      this.deleteIfBallsConsecutive(
+        mappedFields.columnMapped,
+        colorToMatch,
+        unmappedFields.column,
+        helperObject
+      );
+    }
+    // If number of balls of current color >= GOAL_LENGTH in the current TOP L BOTTOM R diagonal, check if they are consecutive
+    if (colorOccurrences(mappedFields.leftToRightDiagMapped) >= GOAL_LENGTH) {
+      this.deleteIfBallsConsecutive(
+        mappedFields.leftToRightDiagMapped,
+        colorToMatch,
+        unmappedFields.topLeftBottomRight,
+        helperObject
+      );
+    }
+    // If number of balls of current color >= GOAL_LENGTH in the current TOP R BOTTOM L diagonal, check if they are consecutive
+
+    if (colorOccurrences(mappedFields.rightToLeftDiagMapped) >= GOAL_LENGTH) {
+      this.deleteIfBallsConsecutive(
+        mappedFields.rightToLeftDiagMapped,
+        colorToMatch,
+        unmappedFields.topRightBottomLeft,
+        helperObject
+      );
+    }
+    // updateResult(mainObject.count);
+    // ----------------------------------------------------------- //
+    // Check if game is over
+    const allFields = document.querySelectorAll('.field');
+    const unusedFields = Array.from(allFields).filter(
+      field => field.innerHTML === ''
+    );
+    setTimeout(() => {
+      if (unusedFields.length === 0 && mainObject.nextRound) {
+        gameOver();
+      }
+    }, 300);
+  }
+  // ---------------------------------------------------------------------------- //
+  deleteIfBallsConsecutive(arrTest, colorName, arrToDel, helperObject) {
+    const indexes = [];
+    for (let i = 0; i <= GOAL_LENGTH; i++) {
+      const current = arrTest.slice(i, i + GOAL_LENGTH);
+      if (
+        current.every(el => el === colorName) &&
+        current.length >= GOAL_LENGTH
+      ) {
+        indexes.push(i);
+      }
+    }
+
+    if (indexes.length === 0) return;
+
+    let indexesToDelete = Array.from(
+      { length: indexes.length + GOAL_LENGTH - 1 },
+      (_, i) => indexes[0] + i
+    );
+
+    setTimeout(() => {
+      arrToDel.map((el, i) =>
+        indexesToDelete.includes(i)
+          ? (document.getElementById(`${el}`).innerHTML = '')
+          : el
+      );
+    }, helperObject.delay);
+    // Update internal result count
+
+    helperObject.count +=
+      (indexes.length - 1 + GOAL_LENGTH) * POINTS_MULTIPLIER;
+    // Stop ball placement after the hit is scored
+    helperObject.nextRound = false;
+  }
 }
 
 export default View;
