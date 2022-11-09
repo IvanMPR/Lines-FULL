@@ -1,5 +1,5 @@
 // prettier-ignore
-import { BOARD_LENGTH, NUMBER_OF_BALLS, GOAL_LENGTH, POINTS_MULTIPLIER } from '../constants.js';
+import { BOARD_LENGTH, NUMBER_OF_BALLS, GOAL_LENGTH, POINTS_MULTIPLIER } from './constants.js';
 
 class View {
   constructor() {
@@ -121,9 +121,14 @@ class View {
     return shortestPath;
   }
 
-  drawPathAndMoveBall(arr) {
+  drawPathAndMoveBall(arr, helperObject) {
     const DELAY_MS = 25;
     let delayBetweenLoops = arr.length * DELAY_MS;
+    // dynamic delay between placing new balls, depending on the time length of the previous move
+    // clear old delay
+    helperObject.delay = 0;
+    // calc new delay, add 100ms just in case, pass delay value in helper object
+    helperObject.delay = delayBetweenLoops + arr.length * DELAY_MS + 100;
     const ball = document.createElement('div');
     const ballName = document
       .querySelector('.active')
@@ -147,31 +152,19 @@ class View {
         }, j * DELAY_MS);
       }
     }, delayBetweenLoops);
-
-    //  const interval = setInterval(() => {
-    //    let i = 0;
-    //    document.getElementById(`${reversed[i]}`).innerHTML = '';
-    //    document.getElementById(`${reversed[i + 1]}`).appendChild(ball);
-    //    document.getElementById(`${reversed[i]}`).classList.remove('path');
-    //    i++;
-
-    //    reversed = reversed.slice(1);
-
-    //    if (i === reversed.length) {
-    //      //  removePathClass();
-    //      //  removeActiveClass();
-    //      clearInterval(interval);
-    //    }
-    //  }, 150);
   }
-  displayNextBalls(colorsContainer) {
-    colorsContainer.forEach(color => {
-      const ball = document.createElement('div');
-      ball.classList.add('color-ball', color);
-      ball.style.backgroundImage = `url(../images/${color}.png)`;
-      this.movesContainer.appendChild(ball);
+  displayNextBalls(colorsArray) {
+    this.movesContainer.innerHTML = '';
+
+    colorsArray.forEach((color, i) => {
+      setTimeout(() => {
+        const ball = document.createElement('div');
+        ball.classList.add('color-ball', color);
+        ball.style.backgroundImage = `url(../images/${color}.png)`;
+        this.movesContainer.appendChild(ball);
+      }, i * 100);
     });
-    colorsContainer.nextMove = [];
+    console.log(colorsArray);
   }
 
   //   test() {

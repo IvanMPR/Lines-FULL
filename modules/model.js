@@ -1,5 +1,5 @@
 // prettier-ignore
-import { BOARD_LENGTH, NUMBER_OF_BALLS, GOAL_LENGTH, POINTS_MULTIPLIER } from '../constants.js';
+import { BOARD_LENGTH, NUMBER_OF_BALLS, GOAL_LENGTH, POINTS_MULTIPLIER } from './constants.js';
 class Model {
   constructor() {
     this.stateObject = {
@@ -7,6 +7,7 @@ class Model {
       nextRound: true,
       nextMove: [],
       shortestPath: [],
+      delay: 0,
     };
   }
   // Fisher - Yates shuffle
@@ -28,6 +29,7 @@ class Model {
   }
 
   getRandomColors = numberOfBalls => {
+    // this.stateObject.nextMove = [];
     //  const result = [];
     const colors = [
       'black',
@@ -38,20 +40,13 @@ class Model {
       'purple',
       'red',
     ];
-    this.stateObject.nextMove = [];
+
     while (numberOfBalls > 0) {
       const randomColor = this.shuffle(colors)[0];
       this.stateObject.nextMove.push(randomColor);
       // result.push(randomColor);
       numberOfBalls--;
     }
-    //  console.log(this.stateObject.nextMove);
-    //  return result;
-
-    //  const ball = document.createElement('div');
-    //  ball.className = `color-ball ${randomColor}`;
-    //  ball.style.backgroundColor = randomColor;
-    //  element.appendChild(ball);
   };
   // helper fn for making adjacency list, returns boolean
   isDivEmpty(divId) {
