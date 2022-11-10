@@ -372,13 +372,13 @@ class View {
       (_, i) => indexes[0] + i
     );
 
-    setTimeout(() => {
-      arrToDel.map((el, i) =>
-        indexesToDelete.includes(i)
-          ? (document.getElementById(`${el}`).innerHTML = '')
-          : el
-      );
-    }, helperObject.delay);
+    // setTimeout(() => {
+    arrToDel.map((el, i) =>
+      indexesToDelete.includes(i)
+        ? (document.getElementById(`${el}`).innerHTML = '')
+        : el
+    );
+    // }, helperObject.delay);
     // Update internal result count
 
     helperObject.count +=
