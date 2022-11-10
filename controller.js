@@ -20,9 +20,9 @@ class Controller {
     return this.m.getRandomColors(numberOfBalls);
   }
   // display balls with random colors from above fn
-  ctrlDisplayBalls(randomColors) {
+  ctrlDisplayBalls(randomColors, helperObject) {
     //  console.log(this.helperObject);
-    return this.v.displayBalls(randomColors);
+    return this.v.displayBalls(randomColors, helperObject);
   }
   // add active class if click happened on the ball
   ctrlAddActiveClass(ball) {
@@ -45,20 +45,20 @@ class Controller {
     return this.v.drawPathAndMoveBall(shortestPathArray, helperObject);
   }
 
-  ctrlDisplayNext(colorsArray) {
-    return this.v.displayNextBalls(colorsArray);
+  ctrlDisplayNext(colorsArray, helperObject) {
+    return this.v.displayNextBalls(colorsArray, helperObject);
   }
   ctrlDisplayCurrentPickNextBalls(helperObject, constant) {
     setTimeout(() => {
       // display current set of balls(after delay, don't want to display new balls while previous ball is on the move)
-      this.ctrlDisplayBalls(helperObject.nextMove);
+      this.ctrlDisplayBalls(helperObject.nextMove, this.helperObject);
       setTimeout(() => {
         // clear ball colors container
         helperObject.nextMove = [];
         // get new set of random colors for the next move, and add them to the container
         this.ctrlGetRandomColors(constant);
         // display next ball moves(from the above container)
-        this.ctrlDisplayNext(helperObject.nextMove);
+        this.ctrlDisplayNext(helperObject.nextMove, helperObject);
       }, 0);
     }, helperObject.delay);
   }
@@ -93,7 +93,16 @@ class Controller {
         !document.querySelector('.active')
       )
         return;
-      // this.helperObject.nextRound = true;
+      // prevent click on the same field where the active ball is
+      if (
+        e.target.id === document.querySelector('.active').closest('.field').id
+      )
+        return;
+      if (e.target.classList.contains('board')) {
+        this.ctrlRemoveActiveClass();
+        return;
+      }
+      this.helperObject.nextRound = true;
       const path = this.ctrlPath(e, this.ctrlMakeList(), this.helperObject);
       this.ctrlDrawPathAndMoveBall(path, this.helperObject);
       // test

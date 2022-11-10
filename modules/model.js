@@ -29,6 +29,7 @@ class Model {
   }
 
   getRandomColors = numberOfBalls => {
+    if (!this.stateObject.nextRound) return;
     // this.stateObject.nextMove = [];
     //  const result = [];
     const colors = [
