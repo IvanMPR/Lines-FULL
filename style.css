@@ -60,6 +60,12 @@ body {
   place-content: center;
 }
 
+.score-fields {
+  opacity: 0.9;
+
+  transition: all 0.1s ease-out;
+}
+
 .text {
   font-size: 1.8rem;
   font-weight: bold;

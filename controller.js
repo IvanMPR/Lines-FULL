@@ -41,8 +41,8 @@ class Controller {
     return this.v.isPathPossible(event, list, stateObject);
   }
 
-  ctrlDrawPathAndMoveBall(shortestPathArray, helperObject) {
-    return this.v.drawPathAndMoveBall(shortestPathArray, helperObject);
+  ctrlDrawPathAndMoveBall(shortestPathArray, helperObject, id) {
+    return this.v.drawPathAndMoveBall(shortestPathArray, helperObject, id);
   }
 
   ctrlDisplayNext(colorsArray, helperObject) {
@@ -104,13 +104,13 @@ class Controller {
       }
       this.helperObject.nextRound = true;
       const path = this.ctrlPath(e, this.ctrlMakeList(), this.helperObject);
-      this.ctrlDrawPathAndMoveBall(path, this.helperObject);
+      this.ctrlDrawPathAndMoveBall(path, this.helperObject, e.target.id);
       // test
       this.ctrlDisplayCurrentPickNextBalls(this.helperObject, NUMBER_OF_BALLS);
       // console.log(e.target);
-      setTimeout(() => {
-        this.v.checkScore(e.target.id, this.helperObject);
-      }, this.helperObject.delay);
+      // setTimeout(() => {
+      //   this.v.checkScore(e.target.id, this.helperObject);
+      // }, this.helperObject.delay);
       // remove active class
       this.ctrlRemoveActiveClass();
     });

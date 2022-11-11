@@ -30,8 +30,9 @@ class Model {
 
   getRandomColors = numberOfBalls => {
     if (!this.stateObject.nextRound) return;
-    // this.stateObject.nextMove = [];
-    //  const result = [];
+
+    this.stateObject.nextMove = [];
+
     const colors = [
       'black',
       'blue',
@@ -45,10 +46,10 @@ class Model {
     while (numberOfBalls > 0) {
       const randomColor = this.shuffle(colors)[0];
       this.stateObject.nextMove.push(randomColor);
-      // result.push(randomColor);
       numberOfBalls--;
     }
   };
+
   // helper fn for making adjacency list, returns boolean
   isDivEmpty(divId) {
     return document.getElementById(`${divId}`).innerHTML !== '';
@@ -75,7 +76,6 @@ class Model {
       list[id] = values;
     });
 
-    // console.log(list);
     return list;
   }
 }

@@ -11,7 +11,8 @@ class View {
     this.scoresCount = document.querySelector('.scores');
     this.invalidMoveDiv = document.querySelector('.move-not-possible');
     this.invalidMoveSound = new Audio('../sounds/invalid_move.wav');
-    this.scoreSound = new Audio('../sounds/clink.wav');
+    this.scoreSound = new Audio('../sounds/glass.flac');
+    this.moveSound = new Audio('../sounds/glued.wav');
   }
 
   // Create board
@@ -40,6 +41,13 @@ class View {
       ball.classList.add('color-ball', ballName);
       ball.style.backgroundImage = `url(../images/${ballName}.png)`;
       document.getElementById(randomEmptyField).appendChild(ball);
+      // check if random placement of balls results with score
+      // place it in timeout to be sure that random placement of the ball will finish before checking if the score happened
+      setTimeout(() => {
+        this.checkScore(randomEmptyField, helperObject);
+        // console.log('checkScore finished');
+      }, 0);
+
       // console.log(ball);
       // if (!mainObject.nextRound) return;
 
@@ -48,7 +56,7 @@ class View {
       //   checkScore(Number(div.id));
       // }
     }
-    //  console.log('finished');
+    // console.log('placement finished');
   }
   addActiveClass(ball) {
     const color = ball.className.split(' ')[1];
@@ -127,12 +135,12 @@ class View {
     return shortestPath;
   }
 
-  drawPathAndMoveBall(arr, helperObject) {
+  drawPathAndMoveBall(arr, helperObject, id) {
     // prevent error in console when move is not possible
     try {
       const DELAY_MS = 25;
       let delayBetweenLoops = arr.length * DELAY_MS;
-      // dynamic delay between placing new balls, depending on the time length of the previous move
+      // dynamic delay between placing new balls, depending on the duration of the previous move
       // clear old delay
       helperObject.delay = 0;
       // calc new delay, add 100ms just in case, pass delay value in helper object
@@ -145,6 +153,7 @@ class View {
       ball.classList.add('color-ball', ballName);
       ball.style.backgroundImage = `url(../images/${ballName}.png)`;
       let reversed = arr.reverse();
+      // this.moveSound.play();
       for (let i = 0; i < reversed.length; i++) {
         setTimeout(() => {
           document.getElementById(reversed[i]).classList.add('path');
@@ -157,6 +166,9 @@ class View {
             document.getElementById(`${reversed[j]}`).innerHTML = '';
             document.getElementById(reversed[j]).classList.remove('path');
             document.getElementById(reversed[j + 1]).classList.remove('path');
+            setTimeout(() => {
+              this.checkScore(id, helperObject);
+            }, 0);
           }, j * DELAY_MS);
         }
       }, delayBetweenLoops);
@@ -259,7 +271,7 @@ class View {
       topLeftBottomRight: topLeftBottomRight,
       topRightBottomLeft: topRightBottomLeft,
     };
-    console.log(result);
+    // console.log(result);
 
     return result;
   }
@@ -373,11 +385,30 @@ class View {
     );
 
     // setTimeout(() => {
-    arrToDel.map((el, i) =>
-      indexesToDelete.includes(i)
-        ? (document.getElementById(`${el}`).innerHTML = '')
-        : el
-    );
+    // Delete consecutive balls, highlight fields of the consecutive balls
+    arrToDel.map((el, i) => {
+      const field = document.getElementById(`${el}`);
+      const initialBg = field.getAttribute('background-color');
+      if (indexesToDelete.includes(i)) {
+        field.classList.add('score-fields');
+        field.style.backgroundColor = colorName;
+        setTimeout(() => {
+          field.classList.remove('score-fields');
+          field.style.backgroundColor = initialBg;
+        }, 300);
+        field.innerHTML = '';
+      } else {
+        return el;
+      }
+    });
+    // arrToDel.map((el, i) =>
+    //   indexesToDelete.includes(i)
+    //     ? (document.getElementById(`${el}`).innerHTML = '')
+    //     : el
+    // );
+
+    this.scoreSound.play();
+
     // }, helperObject.delay);
     // Update internal result count
 
