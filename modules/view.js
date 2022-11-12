@@ -1,5 +1,5 @@
 // prettier-ignore
-import { BOARD_LENGTH, NUMBER_OF_BALLS, GOAL_LENGTH, POINTS_MULTIPLIER } from './constants.js';
+import { BOARD_LENGTH, GOAL_LENGTH, POINTS_MULTIPLIER } from './constants.js';
 
 class View {
   constructor() {
@@ -9,7 +9,8 @@ class View {
     this.failSound = new Audio('./sounds/invalid_move.wav');
     this.movesContainer = document.querySelector('.moves');
     this.scoresCount = document.querySelector('.scores');
-    this.invalidMoveDiv = document.querySelector('.move-not-possible');
+    this.infoDiv = document.querySelector('.info-div');
+    this.infoDivText = document.querySelector('.info-div-p');
     this.invalidMoveSound = new Audio('../sounds/invalid_move.wav');
     this.scoreSound = new Audio('../sounds/glass.flac');
     this.moveSound = new Audio('../sounds/glued.wav');
@@ -25,38 +26,31 @@ class View {
   }
   // Randomly display balls across the board
   displayBalls(randomColors, helperObject) {
-    if (!helperObject.nextRound) return;
-    const allFields = document.querySelectorAll('.field');
+    // prevent console error when the entire board is filled with balls
+    try {
+      if (!helperObject.nextRound) return;
+      const allFields = document.querySelectorAll('.field');
 
-    for (let color of randomColors) {
-      const unusedFields = Array.from(allFields)
-        .filter(field => field.innerHTML === '')
-        .map(field => field.getAttribute('id'));
+      for (let color of randomColors) {
+        const unusedFields = Array.from(allFields)
+          .filter(field => field.innerHTML === '')
+          .map(field => field.getAttribute('id'));
 
-      const randomNumber = Math.floor(Math.random() * unusedFields.length);
-      const randomEmptyField = unusedFields[randomNumber];
-      const ballName = `${color}`;
-      const ball = document.createElement('div');
+        const randomNumber = Math.floor(Math.random() * unusedFields.length);
+        const randomEmptyField = unusedFields[randomNumber];
+        const ballName = `${color}`;
+        const ball = document.createElement('div');
 
-      ball.classList.add('color-ball', ballName);
-      ball.style.backgroundImage = `url(../images/${ballName}.png)`;
-      document.getElementById(randomEmptyField).appendChild(ball);
-      // check if random placement of balls results with score
-      // place it in timeout to be sure that random placement of the ball will finish before checking if the score happened
-      setTimeout(() => {
-        this.checkScore(randomEmptyField, helperObject);
-        // console.log('checkScore finished');
-      }, 0);
-
-      // console.log(ball);
-      // if (!mainObject.nextRound) return;
-
-      // if (unusedFields.length > 0) {
-      //   makeBall(div);
-      //   checkScore(Number(div.id));
-      // }
-    }
-    // console.log('placement finished');
+        ball.classList.add('color-ball', ballName);
+        ball.style.backgroundImage = `url(../images/${ballName}.png)`;
+        document.getElementById(randomEmptyField).appendChild(ball);
+        // check if random placement of balls results with score
+        // place it in timeout to be sure that random placement of the ball will finish before checking if the score happened
+        setTimeout(() => {
+          this.checkScore(randomEmptyField, helperObject);
+        }, 0);
+      }
+    } catch (error) {}
   }
   addActiveClass(ball) {
     const color = ball.className.split(' ')[1];
@@ -110,7 +104,10 @@ class View {
         queue.push(neighbor);
       }
     }
-    // if path creation is impossible, alert will trigger
+    // if path creation is not possible...
+    // prevent next move logic
+    stateObject.nextRound = false;
+    // display message in UI that path is not possible
     this.moveNotPossible();
     return;
   }
@@ -131,7 +128,7 @@ class View {
         }
       }
     }
-    // return shortest path
+
     return shortestPath;
   }
 
@@ -173,7 +170,7 @@ class View {
         }
       }, delayBetweenLoops);
     } catch (err) {
-      helperObject.nextRound = false;
+      // helperObject.nextRound = false;
       // console.log(err.message);
       this.moveNotPossible();
     }
@@ -351,16 +348,16 @@ class View {
         helperObject
       );
     }
-    // updateResult(mainObject.count);
+
     // ----------------------------------------------------------- //
-    // Check if game is over
+    // Check if the game is over
     const allFields = document.querySelectorAll('.field');
     const unusedFields = Array.from(allFields).filter(
       field => field.innerHTML === ''
     );
     setTimeout(() => {
       if (unusedFields.length === 0 && helperObject.nextRound) {
-        gameOver();
+        this.gameOver();
       }
     }, 300);
   }
@@ -377,14 +374,16 @@ class View {
       }
     }
 
-    if (indexes.length === 0) return;
+    if (indexes.length === 0) {
+      helperObject.nextRound = true;
+      return;
+    }
 
     let indexesToDelete = Array.from(
       { length: indexes.length + GOAL_LENGTH - 1 },
       (_, i) => indexes[0] + i
     );
 
-    // setTimeout(() => {
     // Delete consecutive balls, highlight fields of the consecutive balls
     arrToDel.map((el, i) => {
       const field = document.getElementById(`${el}`);
@@ -401,15 +400,9 @@ class View {
         return el;
       }
     });
-    // arrToDel.map((el, i) =>
-    //   indexesToDelete.includes(i)
-    //     ? (document.getElementById(`${el}`).innerHTML = '')
-    //     : el
-    // );
 
     this.scoreSound.play();
 
-    // }, helperObject.delay);
     // Update internal result count
 
     helperObject.count +=
@@ -422,12 +415,27 @@ class View {
     this.scoresCount.textContent = helperObject.count;
   }
   moveNotPossible() {
-    this.invalidMoveDiv.classList.remove('hidden');
+    this.infoDiv.classList.remove('hidden');
     this.invalidMoveSound.play();
     // this.scoreSound.play();
     setTimeout(() => {
-      this.invalidMoveDiv.classList.add('hidden');
+      this.infoDiv.classList.add('hidden');
     }, 1000);
+  }
+  gameOver() {
+    const infoText = 'Game Over !';
+    this.infoDivText.textContent = infoText;
+    this.infoDiv.classList.remove('hidden');
+  }
+  createRefreshButton() {
+    const rfButton = document.createElement('button');
+    rfButton.classList.add('btn', 'btn-restart');
+    rfButton.textContent = 'Restart Game';
+    rfButton.addEventListener('click', this.restartGame);
+    this.board.insertAdjacentElement('afterend', rfButton);
+  }
+  restartGame() {
+    return location.reload();
   }
 }
 

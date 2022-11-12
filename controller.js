@@ -54,7 +54,7 @@ class Controller {
       this.ctrlDisplayBalls(helperObject.nextMove, this.helperObject);
       setTimeout(() => {
         // clear ball colors container
-        helperObject.nextMove = [];
+        // helperObject.nextMove = [];
         // get new set of random colors for the next move, and add them to the container
         this.ctrlGetRandomColors(constant);
         // display next ball moves(from the above container)
@@ -102,16 +102,12 @@ class Controller {
         this.ctrlRemoveActiveClass();
         return;
       }
-      this.helperObject.nextRound = true;
+
       const path = this.ctrlPath(e, this.ctrlMakeList(), this.helperObject);
       this.ctrlDrawPathAndMoveBall(path, this.helperObject, e.target.id);
-      // test
+
       this.ctrlDisplayCurrentPickNextBalls(this.helperObject, NUMBER_OF_BALLS);
-      // console.log(e.target);
-      // setTimeout(() => {
-      //   this.v.checkScore(e.target.id, this.helperObject);
-      // }, this.helperObject.delay);
-      // remove active class
+
       this.ctrlRemoveActiveClass();
     });
   }

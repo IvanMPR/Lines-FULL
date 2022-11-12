@@ -19,7 +19,7 @@ body {
   position: relative;
 }
 
-.move-not-possible {
+.info-div {
   max-width: 150rem;
   position: absolute;
   z-index: 500;
