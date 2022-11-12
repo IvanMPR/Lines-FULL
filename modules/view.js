@@ -26,7 +26,7 @@ class View {
   }
   // Randomly display balls across the board
   displayBalls(randomColors, helperObject) {
-    // prevent console error when the entire board is filled with balls
+    // prevent console error with(try/catch block) when the entire board is filled with balls
     try {
       if (!helperObject.nextRound) return;
       const allFields = document.querySelectorAll('.field');
@@ -45,7 +45,7 @@ class View {
         ball.style.backgroundImage = `url(../images/${ballName}.png)`;
         document.getElementById(randomEmptyField).appendChild(ball);
         // check if random placement of balls results with score
-        // place it in timeout to be sure that random placement of the ball will finish before checking if the score happened
+        // place it in timeout to be sure that random placement of the ball will finish before checking the score
         setTimeout(() => {
           this.checkScore(randomEmptyField, helperObject);
         }, 0);
@@ -64,7 +64,7 @@ class View {
     });
   }
 
-  //**  function isPath is main BFS function for traversing the adjacency list  **//
+  //**  function isPathPossible is main BFS function for traversing the adjacency list  **//
 
   isPathPossible(event, list, stateObject) {
     stateObject.nextRound = true;
@@ -105,7 +105,7 @@ class View {
       }
     }
     // if path creation is not possible...
-    // prevent next move logic
+    // prevent next move
     stateObject.nextRound = false;
     // display message in UI that path is not possible
     this.moveNotPossible();
@@ -170,8 +170,6 @@ class View {
         }
       }, delayBetweenLoops);
     } catch (err) {
-      // helperObject.nextRound = false;
-      // console.log(err.message);
       this.moveNotPossible();
     }
   }
@@ -187,7 +185,6 @@ class View {
         this.movesContainer.appendChild(ball);
       }, i * 100);
     });
-    // console.log(colorsArray);
   }
   // ---------------------------------------------------------------------------- //
   buildRowColAndDiagonals(id) {
@@ -268,7 +265,6 @@ class View {
       topLeftBottomRight: topLeftBottomRight,
       topRightBottomLeft: topRightBottomLeft,
     };
-    // console.log(result);
 
     return result;
   }
@@ -349,7 +345,6 @@ class View {
       );
     }
 
-    // ----------------------------------------------------------- //
     // Check if the game is over
     const allFields = document.querySelectorAll('.field');
     const unusedFields = Array.from(allFields).filter(
@@ -361,7 +356,7 @@ class View {
       }
     }, 300);
   }
-  // ---------------------------------------------------------------------------- //
+
   deleteIfBallsConsecutive(arrTest, colorName, arrToDel, helperObject) {
     const indexes = [];
     for (let i = 0; i <= GOAL_LENGTH; i++) {
@@ -404,20 +399,20 @@ class View {
     this.scoreSound.play();
 
     // Update internal result count
-
     helperObject.count +=
       (indexes.length - 1 + GOAL_LENGTH) * POINTS_MULTIPLIER;
     // Stop ball placement after the hit is scored
     helperObject.nextRound = false;
     this.updateScore(helperObject);
   }
+
   updateScore(helperObject) {
     this.scoresCount.textContent = helperObject.count;
   }
   moveNotPossible() {
     this.infoDiv.classList.remove('hidden');
     this.invalidMoveSound.play();
-    // this.scoreSound.play();
+
     setTimeout(() => {
       this.infoDiv.classList.add('hidden');
     }, 1000);
