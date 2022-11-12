@@ -45,7 +45,7 @@ class View {
         ball.style.backgroundImage = `url(../images/${ballName}.png)`;
         document.getElementById(randomEmptyField).appendChild(ball);
         // check if random placement of balls results with score
-        // place it in timeout to be sure that random placement of the ball will finish before checking the score
+        // place it in timeout to be sure that random placement of the ball will finish before checking the score starts
         setTimeout(() => {
           this.checkScore(randomEmptyField, helperObject);
         }, 0);
