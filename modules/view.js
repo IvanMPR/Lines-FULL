@@ -77,7 +77,7 @@ class View {
         .getAttribute('class')
         .split(' ')[1];
       ball.classList.add('color-ball', ballName);
-      ball.style.backgroundImage = `url(../images/${ballName}.png)`;
+      ball.style.backgroundImage = `url(images/${ballName}.png)`;
       let reversed = arr.reverse();
 
       for (let i = 0; i < reversed.length; i++) {
@@ -110,7 +110,7 @@ class View {
       setTimeout(() => {
         const ball = document.createElement('div');
         ball.classList.add('color-ball', color);
-        ball.style.backgroundImage = `url(/images/${color}.png)`;
+        ball.style.backgroundImage = `url(images/${color}.png)`;
         this.movesContainer.appendChild(ball);
       }, i * 100);
     });
