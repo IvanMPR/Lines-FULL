@@ -1,19 +1,17 @@
 // prettier-ignore
-import { BOARD_LENGTH, GOAL_LENGTH, POINTS_MULTIPLIER } from './constants.js';
+import { BOARD_LENGTH, GOAL_LENGTH, POINTS_MULTIPLIER, DELAY_MS } from './constants.js';
 
 class View {
   constructor() {
     this.board = document.querySelector('.board');
     this.button = document.querySelector('.btn');
     this.body = document.querySelector('body');
-    this.failSound = new Audio('./sounds/invalid_move.wav');
     this.movesContainer = document.querySelector('.moves');
     this.scoresCount = document.querySelector('.scores');
     this.infoDiv = document.querySelector('.info-div');
     this.infoDivText = document.querySelector('.info-div-p');
     this.invalidMoveSound = new Audio('../sounds/invalid_move.wav');
     this.scoreSound = new Audio('../sounds/glass.flac');
-    this.moveSound = new Audio('../sounds/glued.wav');
   }
 
   // Create board
@@ -26,7 +24,7 @@ class View {
   }
   // Randomly display balls across the board
   displayBalls(randomColors, helperObject) {
-    // prevent console error with(try/catch block) when the entire board is filled with balls
+    // prevent console error (with try/catch block) when the entire board is filled with balls
     try {
       if (!helperObject.nextRound) return;
       const allFields = document.querySelectorAll('.field');
@@ -64,78 +62,9 @@ class View {
     });
   }
 
-  //**  function isPathPossible is main BFS function for traversing the adjacency list  **//
-
-  isPathPossible(event, list, stateObject) {
-    stateObject.nextRound = true;
-    const start = Number(
-      document.querySelector('.active').closest('.field').id
-    );
-    const end = Number(event.target.id);
-    // all parents of the adj.list are stored in parentArray, from here shortest path is retraced
-    const parentArray = [];
-    // adjacency list
-    const adjacencyList = list;
-    // BFS queue
-    const queue = [start];
-    // visited set stores visited fields, preventing infinite looping
-    const visited = new Set();
-    // BFS algorithm
-    while (queue.length > 0) {
-      const current = queue.shift();
-      // for every current field, an object is created with current as a parent, and an empty array for its neighbors. Array is filled later in the code with current neighbors
-      parentArray.push({ parent: current, neighbors: [] });
-      // go to the next iteration if current has already been visited
-      if (visited.has(current)) continue;
-      // else, add current to visited set and continue algo
-      visited.add(current);
-      // if match is found, current === to end field
-      if (current === end) {
-        // call retrace fn with parentArray as an argument
-        // function retrace gets the shortest path from start to end
-        // variable path now holds shortest path fields ids
-        const path = this.retrace(parentArray, start, end);
-        //   console.log(path);
-        return path;
-      }
-      // continuation of BFS algo, if match is not found...we pass its neighbors to the queue and parentArray
-      for (let neighbor of adjacencyList[current]) {
-        parentArray[parentArray.length - 1].neighbors.push(neighbor);
-        queue.push(neighbor);
-      }
-    }
-    // if path creation is not possible...
-    // prevent next move
-    stateObject.nextRound = false;
-    // display message in UI that path is not possible
-    this.moveNotPossible();
-    return;
-  }
-
-  retrace(arr, start, end) {
-    // we start with the end field
-    const shortestPath = [end];
-    // and loop backwards until we reach the start field
-    while (!shortestPath.includes(start)) {
-      // we pick the last element in the arr, call it previous
-      const previous = shortestPath[shortestPath.length - 1];
-      // loop trough his neighbors(children)
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i].neighbors.includes(previous) && arr[i].parent !== previous) {
-          // and push previous parent in shortest path if above conditions are met
-          shortestPath.push(arr[i].parent);
-          break;
-        }
-      }
-    }
-
-    return shortestPath;
-  }
-
   drawPathAndMoveBall(arr, helperObject, id) {
-    // prevent error in console when move is not possible
+    // prevent error in console when move is not possible with try/catch block
     try {
-      const DELAY_MS = 25;
       let delayBetweenLoops = arr.length * DELAY_MS;
       // dynamic delay between placing new balls, depending on the duration of the previous move
       // clear old delay
@@ -150,7 +79,7 @@ class View {
       ball.classList.add('color-ball', ballName);
       ball.style.backgroundImage = `url(../images/${ballName}.png)`;
       let reversed = arr.reverse();
-      // this.moveSound.play();
+
       for (let i = 0; i < reversed.length; i++) {
         setTimeout(() => {
           document.getElementById(reversed[i]).classList.add('path');
@@ -186,7 +115,7 @@ class View {
       }, i * 100);
     });
   }
-  // ---------------------------------------------------------------------------- //
+
   buildRowColAndDiagonals(id) {
     // Pad first row with zero, in order to be able to split cell id, for determining row and col
     const tuple = String(id)
@@ -357,10 +286,10 @@ class View {
     }, 300);
   }
 
-  deleteIfBallsConsecutive(arrTest, colorName, arrToDel, helperObject) {
+  deleteIfBallsConsecutive(arrToTest, colorName, arrToDel, helperObject) {
     const indexes = [];
     for (let i = 0; i <= GOAL_LENGTH; i++) {
-      const current = arrTest.slice(i, i + GOAL_LENGTH);
+      const current = arrToTest.slice(i, i + GOAL_LENGTH);
       if (
         current.every(el => el === colorName) &&
         current.length >= GOAL_LENGTH
@@ -401,8 +330,9 @@ class View {
     // Update internal result count
     helperObject.count +=
       (indexes.length - 1 + GOAL_LENGTH) * POINTS_MULTIPLIER;
-    // Stop ball placement after the hit is scored
+    // Stop ball placement after the score
     helperObject.nextRound = false;
+    // Update score in UI
     this.updateScore(helperObject);
   }
 
