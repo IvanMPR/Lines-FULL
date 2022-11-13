@@ -1,7 +1,6 @@
 import Model from './modules/model.js';
 import View from './modules/view.js';
-// prettier-ignore
-import { BOARD_LENGTH, NUMBER_OF_BALLS, GOAL_LENGTH, POINTS_MULTIPLIER } from './modules/constants.js';
+import { NUMBER_OF_BALLS } from './modules/constants.js';
 
 class Controller {
   constructor(m, v) {
@@ -21,7 +20,6 @@ class Controller {
   }
   // display balls with random colors from above fn
   ctrlDisplayBalls(randomColors, helperObject) {
-    //  console.log(this.helperObject);
     return this.v.displayBalls(randomColors, helperObject);
   }
   // add active class if click happened on the ball
@@ -37,8 +35,8 @@ class Controller {
     return this.m.makeList();
   }
   // returns an array with shortest path from start to end, or fail message if path is not possible
-  ctrlPath(event, list, stateObject) {
-    return this.v.isPathPossible(event, list, stateObject);
+  ctrlPath(event, moveNotPossibleFn) {
+    return this.m.isPathPossible(event, moveNotPossibleFn);
   }
 
   ctrlDrawPathAndMoveBall(shortestPathArray, helperObject, id) {
@@ -48,19 +46,31 @@ class Controller {
   ctrlDisplayNext(colorsArray, helperObject) {
     return this.v.displayNextBalls(colorsArray, helperObject);
   }
+
   ctrlDisplayCurrentPickNextBalls(helperObject, constant) {
     setTimeout(() => {
       // display current set of balls(after delay, don't want to display new balls while previous ball is on the move)
       this.ctrlDisplayBalls(helperObject.nextMove, this.helperObject);
       setTimeout(() => {
-        // clear ball colors container
-        // helperObject.nextMove = [];
-        // get new set of random colors for the next move, and add them to the container
+        // get new set of random colors for the next move, and add them to the container(helperObject)
         this.ctrlGetRandomColors(constant);
         // display next ball moves(from the above container)
         this.ctrlDisplayNext(helperObject.nextMove, helperObject);
       }, 0);
+      // delay is calculated in the View - drawPathAndMoveBall fn, different for every move
     }, helperObject.delay);
+  }
+
+  ctrlMoveNotPossible() {
+    return this.v.moveNotPossible();
+  }
+
+  ctrlHideStartBtn() {
+    this.startButton.style.display = 'none';
+    document.querySelector('.scores-div').classList.remove('hidden');
+    setTimeout(() => {
+      this.v.createRefreshButton();
+    }, 500);
   }
 
   listeners() {
@@ -68,12 +78,10 @@ class Controller {
     this.ctrlCreateBoard();
     //  initialize first random colors
     this.ctrlGetRandomColors(NUMBER_OF_BALLS);
-    //  start game, hide button
+    //  start game, hide button, show score, create restart btn
     this.startButton.addEventListener('click', () => {
       this.ctrlDisplayCurrentPickNextBalls(this.helperObject, NUMBER_OF_BALLS);
-      // hide button
-      this.startButton.style.display = 'none';
-      document.querySelector('.scores-div').classList.remove('hidden');
+      this.ctrlHideStartBtn();
     });
 
     // --- Click on the ball to select it for movement --- Event delegation --- //
@@ -103,7 +111,7 @@ class Controller {
         return;
       }
 
-      const path = this.ctrlPath(e, this.ctrlMakeList(), this.helperObject);
+      const path = this.ctrlPath(e, this.ctrlMoveNotPossible);
       this.ctrlDrawPathAndMoveBall(path, this.helperObject, e.target.id);
 
       this.ctrlDisplayCurrentPickNextBalls(this.helperObject, NUMBER_OF_BALLS);
