@@ -25,7 +25,6 @@ body {
   margin: auto;
   display: grid;
   place-content: center;
-  /* padding: 1rem 2rem; */
 }
 
 .info-div {
@@ -70,10 +69,7 @@ h1 {
   align-items: center;
   justify-content: space-between;
 }
-/* .scores-div {
-  /* margin-left: 5rem;
-} 
- */
+
 .scores {
   text-align: center;
   font-size: 3rem;
@@ -87,7 +83,6 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: right;
-  background-color: aliceblue;
 }
 
 .btn,
@@ -128,7 +123,6 @@ h1 {
   gap: 0.5rem;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: auto;
-  background-color: cornflowerblue;
 }
 
 .field {
@@ -198,20 +192,12 @@ h1 {
     gap: 0.3rem;
   }
 
-  .scores-and-moves {
-    width: 52.7rem;
-  }
-  /* 
-  .moves {
-  }
-   */
-  /*    
-  .scores-div {
-    /* margin-left: 3rem; 
-  } 
-  */
   .scores {
     font-size: 2.6rem;
+  }
+
+  .scores-and-moves {
+    width: 52.7rem;
   }
 
   .info-div {
@@ -250,19 +236,12 @@ h1 {
   }
   .scores-and-moves {
     width: 31.8rem;
-    /* background-color: aliceblue; */
   }
   .moves {
     display: flex;
-    /* align-items: right; */
     justify-content: right;
-    /* background-color: aliceblue; */
   }
-  /*
-  .scores-div {
-     margin-left: 6rem;
-  }
-   */
+
   .info-div {
     max-width: 60rem;
     font-size: 1.2rem;
