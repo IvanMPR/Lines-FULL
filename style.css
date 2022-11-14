@@ -83,7 +83,7 @@ h1 {
 
 .moves {
   width: 15rem;
-  height: 7rem;
+  /* height: 7rem; */
   display: flex;
   align-items: center;
   justify-content: right;
@@ -92,7 +92,7 @@ h1 {
 .btn,
 .btn-restart {
   display: block;
-  margin: 4rem auto 0;
+  margin: 2rem auto 0;
   padding: 1rem 3rem;
   cursor: pointer;
   border-radius: 0.3rem;
