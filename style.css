@@ -19,6 +19,15 @@ body {
   position: relative;
 }
 
+.container {
+  max-width: 74.5rem;
+  border: 1px solid white;
+  margin: auto;
+  display: grid;
+  place-content: center;
+  /* padding: 1rem 2rem; */
+}
+
 .info-div {
   max-width: 150rem;
   position: absolute;
@@ -55,16 +64,16 @@ h1 {
 }
 
 .scores-and-moves {
-  width: 72.7rem;
+  width: 100%;
   margin: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.scores-div {
-  margin-left: 5rem;
-}
-
+/* .scores-div {
+  /* margin-left: 5rem;
+} 
+ */
 .scores {
   text-align: center;
   font-size: 3rem;
@@ -77,13 +86,13 @@ h1 {
   height: 7rem;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: right;
 }
 
 .btn,
 .btn-restart {
   display: block;
-  margin: 6rem auto 0;
+  margin: 4rem auto 0;
   padding: 1rem 3rem;
   cursor: pointer;
   border-radius: 0.3rem;
@@ -111,13 +120,14 @@ h1 {
 }
 
 .board {
-  width: 70rem;
-  height: 70rem;
+  width: 74.5rem;
+  height: 74.5rem;
   margin: 1rem auto;
   display: grid;
   gap: 0.5rem;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: auto;
+  background-color: cornflowerblue;
 }
 
 .field {
@@ -178,20 +188,34 @@ h1 {
   body {
     overflow-y: auto;
   }
+  .container {
+    width: 52.7rem;
+  }
   .board {
-    width: 50rem;
-    height: 50rem;
+    width: 52.7rem;
+    height: 52.7rem;
     gap: 0.3rem;
   }
+
   .scores-and-moves {
     width: 52.7rem;
   }
-  .scores-div {
-    margin-left: 3rem;
+  /* 
+  .moves {
   }
-
+   */
+  /*    
+  .scores-div {
+    /* margin-left: 3rem; 
+  } 
+  */
   .scores {
     font-size: 2.6rem;
+  }
+
+  .info-div {
+    max-width: 120rem;
+    font-size: 1.4rem;
   }
 
   .field {
@@ -214,20 +238,36 @@ h1 {
   body {
     overflow-y: auto;
   }
+  .container {
+    width: 31.8rem;
+  }
   .board {
-    width: 28rem;
-    height: 28rem;
+    width: 31.8rem;
+    height: 31.8rem;
     gap: 0.2rem;
   }
   .scores-and-moves {
-    width: 40rem;
+    width: 31.8rem;
+    /* background-color: aliceblue; */
   }
+  .moves {
+    display: flex;
+    /* align-items: right; */
+    justify-content: right;
+    /* background-color: aliceblue; */
+  }
+  /*
   .scores-div {
-    margin-left: 6rem;
+     margin-left: 6rem;
+  }
+   */
+  .info-div {
+    max-width: 60rem;
+    font-size: 1.2rem;
   }
 
   .scores {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
 
   .field {
