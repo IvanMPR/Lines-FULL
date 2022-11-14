@@ -10,8 +10,8 @@ class View {
     this.scoresCount = document.querySelector('.scores');
     this.infoDiv = document.querySelector('.info-div');
     this.infoDivText = document.querySelector('.info-div-p');
-    this.invalidMoveSound = new Audio('../sounds/invalid_move.wav');
-    this.scoreSound = new Audio('../sounds/glass.flac');
+    this.invalidMoveSound = new Audio('sounds/invalid_move.wav');
+    this.scoreSound = new Audio('sounds/glass.flac');
   }
 
   // Create board
