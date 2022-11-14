@@ -83,10 +83,11 @@ h1 {
 
 .moves {
   width: 15rem;
-  /* height: 7rem; */
+  height: 6rem;
   display: flex;
   align-items: center;
   justify-content: right;
+  background-color: aliceblue;
 }
 
 .btn,
