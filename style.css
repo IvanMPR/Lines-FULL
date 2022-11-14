@@ -21,7 +21,6 @@ body {
 
 .container {
   max-width: 74.5rem;
-  border: 1px solid white;
   margin: auto;
   display: grid;
   place-content: center;
