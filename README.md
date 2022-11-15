@@ -10,7 +10,10 @@ concepts in order to be able to complete it.
 <a href="https://ivanmpr.github.io/Lines/" target="_blank">This</a> is where I was few weeks ago, without any knowledge about searching data problems and algorithyms. After some quality spent time, learning and understanding nodes, edges, trees, weighted and unweighted graphs, adjacency lists and other concepts, I managed to implement breadth first search and shortest path algorithym, necessary to finish this project.
 <br>
 <br>
-Few screenshots, and basic rules about the game are below
+Screenshot and basic rules about the game are below
+<br>
+<br>
+<img src="screenshots/screen1.jpg" width="100%"/>
 <br>
 <br>
 Rules are simple! Make a line of 5 or more consecutive balls of the same color (in a row, column or diagonally),
@@ -18,5 +21,6 @@ in order to clear them of the board and earn points.
 <br>
 Click on the ball to select it, click on the desired field to move it.
 <br>
+
 
  
