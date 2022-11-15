@@ -13,7 +13,7 @@ concepts in order to be able to complete it.
 Screenshot and basic rules about the game are below
 <br>
 <br>
-<img src="screenshots/screen1.jpg" width="100%"/>
+<img src="./screenshots/screen1.jpg" width="100%"/>
 <br>
 <br>
 Rules are simple! Make a line of 5 or more consecutive balls of the same color (in a row, column or diagonally),
