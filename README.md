@@ -16,7 +16,7 @@ Screenshot and basic rules about the game are below
 <img src="screenshots/screen1.png" width="100%">
 <br>
 <br>
-Rules are simple! Make a line of 5 or more consecutive balls of the same color (in a row, column or diagonally),
+Rules: Make a line of 5 or more consecutive balls of the same color (in a row, column or diagonally),
 in order to clear them of the board and earn points.
 <br>
 Click on the ball to select it, click on the desired field to move it.
