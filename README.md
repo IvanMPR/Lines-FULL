@@ -23,7 +23,7 @@ Click on the ball to select it, click on the desired field to move it.
 <br>
 If path creation between two fields is not possible, error message will be shown in UI, and fail sound will be played.
 <br>
-If there is no more empty fields on the board, game is over, so try to 'stay alive' as long as possible.
+If there are no more empty fields on the board, game is over, so try to 'stay alive' as long as possible.
 Enjoy!
 
  
