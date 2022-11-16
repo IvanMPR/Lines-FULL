@@ -21,6 +21,7 @@ in order to clear them of the board and earn points.
 <br>
 Click on the ball to select it, click on the desired field to move it.
 <br>
+If path creation between two fields is not possible, error message will be shown in UI.
 
 
  
