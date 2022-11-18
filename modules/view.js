@@ -17,6 +17,7 @@ class View {
   // Create board
   createBoard() {
     let html = '';
+    // square board so length * length
     for (let i = 0; i < BOARD_LENGTH * BOARD_LENGTH; i++) {
       html += `<div class="field" data-fieldId="${i}" id="${i}"></div>`;
     }
